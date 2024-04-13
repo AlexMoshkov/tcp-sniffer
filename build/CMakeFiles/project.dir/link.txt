@@ -1,0 +1,1 @@
+gcc -lcyaml CMakeFiles/project.dir/main.c.o CMakeFiles/project.dir/src/sniffer.c.o CMakeFiles/project.dir/src/interfaces.c.o CMakeFiles/project.dir/src/config.c.o -o project  /usr/lib/x86_64-linux-gnu/libpcap.so -lcyaml 
