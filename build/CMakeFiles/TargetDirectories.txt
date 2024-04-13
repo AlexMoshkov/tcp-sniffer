@@ -1,3 +1,0 @@
-/home/dtalexundeer/code/project/build/CMakeFiles/project.dir
-/home/dtalexundeer/code/project/build/CMakeFiles/edit_cache.dir
-/home/dtalexundeer/code/project/build/CMakeFiles/rebuild_cache.dir
