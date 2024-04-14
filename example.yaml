@@ -1,6 +1,6 @@
 handlers:
   - name: filter_name
-    filter: filter
+    filter: ip
     save_capture:
       filepath: filepath
   - name: another_filter

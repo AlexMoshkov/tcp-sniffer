@@ -5,7 +5,7 @@
 #ifndef PROJECT_ETHERNET_H
 #define PROJECT_ETHERNET_H
 
-#define ETHER_SIZE 14
+#define SIZE_ETHERNET 14
 #define ETHER_ADDR_LEN 6
 
 struct sniff_ethernet {
@@ -15,4 +15,3 @@ struct sniff_ethernet {
 };
 
 #endif //PROJECT_ETHERNET_H
-

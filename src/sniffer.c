@@ -36,11 +36,12 @@ void init_sniffer(struct config *cfg, struct sniffer **sniff) {
     exit(1);
 }
 
+void free_filter(struct filter *filter);
 
 void free_sniffer(struct sniffer *sniff) {
-//    for (int i = 0; i < sniff->filters_count; ++i) {
-//        free_filter(&sniff->filters[i]);
-//    }
+    for (int i = 0; i < sniff->filters_count; ++i) {
+        free_filter(&sniff->filters[i]);
+    }
     free(sniff->filters);
     free(sniff);
 }
@@ -51,13 +52,12 @@ void init_filter(struct cfg_handler *handler, struct filter *filter) {
 }
 
 void free_filter(struct filter *filter) {
-    free(filter->fp);
-    free(filter);
+    pcap_freecode(&filter->fp);
 }
 
 void compile_filter(struct filter *filter, pcap_t *handle) {
-    if (pcap_compile(handle, filter->fp, filter->filter_str, 1, PCAP_NETMASK_UNKNOWN) == -1) {
-        fprintf(stderr, "Couldn't parse filter %s: %s\n", filter->filter_str, pcap_geterr(handle));
+    if (pcap_compile(handle, &filter->fp, filter->filter_str, 1, PCAP_NETMASK_UNKNOWN) == -1) {
+        fprintf(stderr, "Couldn't compile filter %s: %s\n", filter->filter_str, pcap_geterr(handle));
         exit(1);
     }
 }

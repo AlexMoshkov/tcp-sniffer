@@ -13,7 +13,7 @@ struct filter {
     char *name;
     char *filter_str;
 
-    struct bpf_program *fp;
+    struct bpf_program fp;
 
     // TODO: save handler in some way
 };
@@ -25,7 +25,7 @@ struct sniffer {
     struct filter *filters;
     unsigned filters_count;
 
-    struct bpf_program *full_fp;
+    struct bpf_program full_fp;
 };
 
 extern void init_sniffer(struct config *cfg, struct sniffer **sniff);
