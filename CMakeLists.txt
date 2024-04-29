@@ -22,6 +22,10 @@ add_executable(tcp-sniffer main.c
         src/capture.c
         include/ip.h
         include/tcp.h
+        include/handlers.h
+        src/handlers/save_pcap.h
+        src/handlers/save_pcap.c
+        src/handlers/handlers.c
 )
 
 target_link_libraries(tcp-sniffer ${PCAP_LIBRARY})

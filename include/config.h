@@ -5,7 +5,7 @@
 #ifndef PROJECT_CONFIG_H
 #define PROJECT_CONFIG_H
 
-struct save_capture_func {
+struct save_capture_handler {
     char *filepath;
 };
 
@@ -14,7 +14,7 @@ struct cfg_handler {
     char *filter;
 
     // handlers
-    struct save_capture_func *save_capture;
+    struct save_capture_handler *save_capture;
 };
 
 struct config {

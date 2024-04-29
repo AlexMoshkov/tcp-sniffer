@@ -10,12 +10,13 @@
 
 #include "../include/ethernet.h"
 #include "../include/sniffer.h"
+#include "../include/handlers.h"
 
 const struct sniff_ethernet *ethernet;
 
-void init_filter(struct cfg_handler *handler, struct filter *filter);
+void init_filter(pcap_t *handle, struct cfg_handler *handler, struct filter *filter);
 
-void init_sniffer(struct config *cfg, struct sniffer **sniff) {
+void init_sniffer(pcap_t *handle, struct config *cfg, struct sniffer **sniff) {
     *sniff = (struct sniffer *) malloc(sizeof(struct sniffer));
     if (*sniff == NULL) {
         goto error;
@@ -28,7 +29,7 @@ void init_sniffer(struct config *cfg, struct sniffer **sniff) {
 
     (*sniff)->filters_count = cfg->handlers_count;
     for (int i = 0; i < (*sniff)->filters_count; ++i) {
-        init_filter(cfg->handlers[i], &(*sniff)->filters[i]);
+        init_filter(handle, cfg->handlers[i], &(*sniff)->filters[i]);
     }
     return;
     error:
@@ -46,23 +47,23 @@ void free_sniffer(struct sniffer *sniff) {
     free(sniff);
 }
 
-void init_filter(struct cfg_handler *handler, struct filter *filter) {
+void init_filter(pcap_t *handle, struct cfg_handler *handler, struct filter *filter) {
     filter->name = handler->name;
     filter->filter_str = handler->filter;
+
+    init_handlers(handle, handler, filter);
 }
 
 void free_filter(struct filter *filter) {
+    free_handlers(filter);
     pcap_freecode(&filter->fp);
 }
 
-void compile_filter(struct filter *filter, pcap_t *handle) {
+void compile_filter(struct filter *filter, struct cfg_handler *handler, pcap_t *handle) {
     if (pcap_compile(handle, &filter->fp, filter->filter_str, 1, PCAP_NETMASK_UNKNOWN) == -1) {
         fprintf(stderr, "Couldn't compile filter %s: %s\n", filter->filter_str, pcap_geterr(handle));
         exit(1);
     }
-}
-
-void compile_full_filter(struct sniffer *sniff) {
 }
 
 //int start_capture(char *device, struct config *cfg) {

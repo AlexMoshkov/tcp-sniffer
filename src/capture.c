@@ -8,6 +8,8 @@
 
 #include "../include/capture.h"
 #include "../include/sniffer.h"
+#include "../include/handlers.h"
+
 #include "../include/ethernet.h"
 #include "../include/ip.h"
 #include "../include/tcp.h"
@@ -15,6 +17,14 @@
 
 
 const char filter_delimiter[] = " || ";
+
+void process_packets_by_filters(struct sniffer *sniff, const struct pcap_pkthdr *header, const u_char *packet) {
+    for (size_t i = 0; i < sniff->filters_count; ++i) {
+        if (pcap_offline_filter(&sniff->filters[i].fp, header, packet)) {
+            process_handlers(&sniff->filters[i], header, packet);
+        }
+    }
+}
 
 void print_payload(const u_char *payload, int len);
 
@@ -34,52 +44,54 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 
     printf("\nPacket number: %d\n", count++);
 
-    ethernet = (struct sniff_ethernet *) (packet);
-    ip = (struct sniff_ip *) (packet + SIZE_ETHERNET);
+    process_packets_by_filters(sniff, header, packet);
 
-    size_ip = IP_HL(ip) * 4;
-    if (size_ip < 20) {
-        printf("    * Invalid IP header length: %u bytes", size_ip);
-        return;
-    }
-
-    printf("       From: %s\n", inet_ntoa(ip->ip_src));
-    printf("         To: %s\n", inet_ntoa(ip->ip_dst));
-
-    switch (ip->ip_p) {
-        case IPPROTO_TCP:
-            printf("   Protocol: TCP\n");
-            break;
-        case IPPROTO_UDP:
-            printf("   Protocol: UDP\n");
-            return;
-        case IPPROTO_ICMP:
-            printf("   Protocol: ICMP\n");
-            return;
-        case IPPROTO_IP:
-            printf("   Protocol: IP\n");
-            return;
-        default:
-            printf("   Protocol: unknown\n");
-            return;
-    }
-
-    tcp = (struct sniff_tcp *) (packet + SIZE_ETHERNET + size_ip);
-    size_tcp = TH_OFF(tcp) * 4;
-    if (size_tcp < 20) {
-        printf("   * Invalid TCP header length: %u bytes\n", size_tcp);
-        return;
-    }
-
-    printf("   Src port: %d\n", ntohs(tcp->th_sport));
-    printf("   Dst port: %d\n", ntohs(tcp->th_dport));
-
-    payload = (u_char *) (packet + SIZE_ETHERNET + size_ip + size_tcp);
-    size_payload = ntohs(ip->ip_len) - (size_ip + size_tcp);
-    if (size_payload > 0) {
-        printf("   Payload (%d bytes):\n", size_payload);
-        print_payload(payload, size_payload);
-    }
+//    ethernet = (struct sniff_ethernet *) (packet);
+//    ip = (struct sniff_ip *) (packet + SIZE_ETHERNET);
+//
+//    size_ip = IP_HL(ip) * 4;
+//    if (size_ip < 20) {
+//        printf("    * Invalid IP header length: %u bytes", size_ip);
+//        return;
+//    }
+//
+//    printf("       From: %s\n", inet_ntoa(ip->ip_src));
+//    printf("         To: %s\n", inet_ntoa(ip->ip_dst));
+//
+//    switch (ip->ip_p) {
+//        case IPPROTO_TCP:
+//            printf("   Protocol: TCP\n");
+//            break;
+//        case IPPROTO_UDP:
+//            printf("   Protocol: UDP\n");
+//            return;
+//        case IPPROTO_ICMP:
+//            printf("   Protocol: ICMP\n");
+//            return;
+//        case IPPROTO_IP:
+//            printf("   Protocol: IP\n");
+//            return;
+//        default:
+//            printf("   Protocol: unknown\n");
+//            return;
+//    }
+//
+//    tcp = (struct sniff_tcp *) (packet + SIZE_ETHERNET + size_ip);
+//    size_tcp = TH_OFF(tcp) * 4;
+//    if (size_tcp < 20) {
+//        printf("   * Invalid TCP header length: %u bytes\n", size_tcp);
+//        return;
+//    }
+//
+//    printf("   Src port: %d\n", ntohs(tcp->th_sport));
+//    printf("   Dst port: %d\n", ntohs(tcp->th_dport));
+//
+//    payload = (u_char *) (packet + SIZE_ETHERNET + size_ip + size_tcp);
+//    size_payload = ntohs(ip->ip_len) - (size_ip + size_tcp);
+//    if (size_payload > 0) {
+//        printf("   Payload (%d bytes):\n", size_payload);
+//        print_payload(payload, size_payload);
+//    }
 }
 
 void print_hex_ascii_line(const u_char *payload, int len, int offset) {
@@ -180,13 +192,13 @@ void start(char *device, struct config *cfg) {
     }
 
     struct sniffer *sniff;
-    init_sniffer(cfg, &sniff);
+    init_sniffer(handle, cfg, &sniff);
 
     // build full filter string from all filters
     size_t full_filter_size = 0;
     size_t delimiter_size = strlen(filter_delimiter);
     for (int i = 0; i < sniff->filters_count; ++i) {
-        compile_filter(&sniff->filters[i], handle);
+        compile_filter(&sniff->filters[i], cfg->handlers[i], handle);
         full_filter_size += strlen(sniff->filters[i].filter_str) + delimiter_size;
     }
     char full_filter[full_filter_size];
@@ -206,6 +218,7 @@ void start(char *device, struct config *cfg) {
     if (pcap_setfilter(handle, &sniff->full_fp) == -1) {
         fprintf(stderr, "Couldn't install full filter %s: %s", full_filter, pcap_geterr(handle));
     }
+
 
     pcap_loop(handle, -1, got_packet, (u_char *) sniff);
 
