@@ -176,7 +176,7 @@ void print_payload(const u_char *payload, int len) {
 }
 
 
-void start(char *device, struct config *cfg) {
+void sniff_interface(char *device, struct config *cfg) {
     char errbuf[PCAP_ERRBUF_SIZE];
 
     pcap_t *handle;
@@ -186,10 +186,10 @@ void start(char *device, struct config *cfg) {
         exit(1);
     }
 
-    if (pcap_datalink(handle) != DLT_EN10MB) {
-        fprintf(stderr, "Device %s doesn't provide, Ethernet headers - not supported", device);
-        exit(1);
-    }
+//    if (pcap_datalink(handle) != DLT_EN10MB) {
+//        fprintf(stderr, "Device %s doesn't provide, Ethernet headers - not supported", device);
+//        exit(1);
+//    }
 
     struct sniffer *sniff;
     init_sniffer(handle, cfg, &sniff);
