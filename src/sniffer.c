@@ -8,9 +8,9 @@
 #include <string.h>
 #include <errno.h>
 
-#include "../include/ethernet.h"
-#include "../include/sniffer.h"
-#include "../include/handlers.h"
+#include "ethernet.h"
+#include "sniffer.h"
+#include "handlers/handlers.h"
 
 const struct sniff_ethernet *ethernet;
 

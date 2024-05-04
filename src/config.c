@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../include/config.h"
+#include "config.h"
 
 static const cyaml_schema_field_t save_capture_fields_schema[] = {
         CYAML_FIELD_STRING_PTR("filepath", CYAML_FLAG_POINTER, struct save_capture_handler, filepath, 0,

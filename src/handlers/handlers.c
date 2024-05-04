@@ -3,7 +3,7 @@
 //
 
 #include <malloc.h>
-#include "../../include/handlers.h"
+#include "handlers.h"
 
 void init_by_cfg_handler(pcap_t *handle, struct cfg_handler *handler, struct filter *filter) {
     if (handler->save_capture != NULL) {

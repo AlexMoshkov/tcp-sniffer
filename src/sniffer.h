@@ -8,7 +8,7 @@
 #include <pcap.h>
 
 #include "config.h"
-#include "../src/handlers/save_pcap.h"
+#include "handlers/save_pcap.h"
 
 struct filter {
     char *name;

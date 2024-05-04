@@ -6,13 +6,13 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "../include/capture.h"
-#include "../include/sniffer.h"
-#include "../include/handlers.h"
+#include "capture.h"
+#include "sniffer.h"
+#include "handlers/handlers.h"
 
-#include "../include/ethernet.h"
-#include "../include/ip.h"
-#include "../include/tcp.h"
+#include "ethernet.h"
+#include "ip.h"
+#include "tcp.h"
 #include <netinet/ip.h>
 
 

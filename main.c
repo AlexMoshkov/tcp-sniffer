@@ -1,9 +1,9 @@
 #include <getopt.h>
 #include <stdlib.h>
 
-#include "include/config.h"
-#include "include/sniffer.h"
-#include "include/capture.h"
+#include "src/config.h"
+#include "src/sniffer.h"
+#include "src/capture.h"
 
 char *help_message = "tcp-sniffer --config <yaml_file>  [ --interface <device_name> ]\n\n"
                      "Flags:\n"

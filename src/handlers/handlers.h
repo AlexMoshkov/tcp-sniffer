@@ -5,9 +5,9 @@
 #ifndef TCP_SNIFFER_HANDLERS_H
 #define TCP_SNIFFER_HANDLERS_H
 
-#include "sniffer.h"
-#include "config.h"
-#include "../src/handlers/save_pcap.h"
+#include "../sniffer.h"
+#include "../config.h"
+#include "save_pcap.h"
 
 extern void init_handlers(pcap_t *handle, struct cfg_handler *handler, struct filter *filter);
 
