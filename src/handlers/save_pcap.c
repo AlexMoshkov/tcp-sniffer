@@ -27,4 +27,5 @@ void init_save_pcap_handler(struct save_pcap_handler **handler, pcap_t *handle, 
 
 void free_save_pcap_handler(struct save_pcap_handler *handler) {
     pcap_dump_close(handler->pcap_dump);
+    free(handler);
 }

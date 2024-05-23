@@ -8,7 +8,7 @@
 #include <pcap.h>
 
 #include "config.h"
-#include "handlers/save_pcap.h"
+#include "handlers/handlers.h"
 
 struct filter {
     char *name;
@@ -16,15 +16,13 @@ struct filter {
 
     struct bpf_program fp;
 
-    // pointers to handlers structs
-    // if is not null => handling
-    struct save_pcap_handler *save_pcap_handler;
+    struct handlers *handlers;
 };
 
-extern void compile_filter(struct filter *filter, struct cfg_handler *handler, pcap_t *handle);
-
+extern void compile_filter(struct filter *filter, pcap_t *handle);
 
 struct sniffer {
+    pcap_t *handle;
     struct filter *filters;
     unsigned filters_count;
 

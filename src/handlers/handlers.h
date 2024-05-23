@@ -9,10 +9,14 @@
 #include "../config.h"
 #include "save_pcap.h"
 
-extern void init_handlers(pcap_t *handle, struct cfg_handler *handler, struct filter *filter);
+struct handlers {
+    struct save_pcap_handler *save_pcap_handler;
+};
 
-extern void free_handlers(struct filter *filter);
+extern void init_handlers(pcap_t *handle, struct cfg_handler *cfg_handler, struct handlers **handlers);
 
-extern void process_handlers(struct filter *filter, const struct pcap_pkthdr *header, const u_char *packet);
+extern void free_handlers(struct handlers *handlers);
+
+extern void process_packages(struct handlers *handlers, const struct pcap_pkthdr *header, const u_char *packet);
 
 #endif //TCP_SNIFFER_HANDLERS_H

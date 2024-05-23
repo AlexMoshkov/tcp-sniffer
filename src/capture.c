@@ -21,7 +21,7 @@ const char filter_delimiter[] = " || ";
 void process_packets_by_filters(struct sniffer *sniff, const struct pcap_pkthdr *header, const u_char *packet) {
     for (size_t i = 0; i < sniff->filters_count; ++i) {
         if (pcap_offline_filter(&sniff->filters[i].fp, header, packet)) {
-            process_handlers(&sniff->filters[i], header, packet);
+            process_packages(sniff->filters[i].handlers, header, packet);
         }
     }
 }
@@ -198,7 +198,7 @@ void sniff_interface(char *device, struct config *cfg) {
     size_t full_filter_size = 0;
     size_t delimiter_size = strlen(filter_delimiter);
     for (int i = 0; i < sniff->filters_count; ++i) {
-        compile_filter(&sniff->filters[i], cfg->handlers[i], handle);
+        compile_filter(&sniff->filters[i], handle);
         full_filter_size += strlen(sniff->filters[i].filter_str) + delimiter_size;
     }
     char full_filter[full_filter_size];

@@ -21,6 +21,7 @@ void init_sniffer(pcap_t *handle, struct config *cfg, struct sniffer **sniff) {
     if (*sniff == NULL) {
         goto error;
     }
+    (*sniff)->handle = handle;
 
     (*sniff)->filters = malloc(cfg->handlers_count * sizeof(struct filter));
     if ((*sniff)->filters == NULL) {
@@ -51,15 +52,15 @@ void init_filter(pcap_t *handle, struct cfg_handler *handler, struct filter *fil
     filter->name = handler->name;
     filter->filter_str = handler->filter;
 
-    init_handlers(handle, handler, filter);
+    init_handlers(handle, handler, &filter->handlers);
 }
 
 void free_filter(struct filter *filter) {
-    free_handlers(filter);
+    free_handlers(filter->handlers);
     pcap_freecode(&filter->fp);
 }
 
-void compile_filter(struct filter *filter, struct cfg_handler *handler, pcap_t *handle) {
+void compile_filter(struct filter *filter, pcap_t *handle) {
     if (pcap_compile(handle, &filter->fp, filter->filter_str, 1, PCAP_NETMASK_UNKNOWN) == -1) {
         fprintf(stderr, "Couldn't compile filter %s: %s\n", filter->filter_str, pcap_geterr(handle));
         exit(1);
