@@ -2,17 +2,12 @@
 // Created by dtalexundeer on 3/10/24.
 //
 //
-#include <sys/socket.h>
 #include <malloc.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
-#include "ethernet.h"
 #include "sniffer.h"
 #include "handlers/handlers.h"
-
-const struct sniff_ethernet *ethernet;
 
 void init_filter(pcap_t *handle, struct cfg_handler *handler, struct filter *filter);
 

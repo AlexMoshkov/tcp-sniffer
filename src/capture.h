@@ -7,6 +7,6 @@
 
 #include "config.h"
 
-extern void sniff_interface(char *device, struct config *cfg);
+extern void sigint_handler(int sig);
 
 #endif //PROJECT_CAPTURE_H

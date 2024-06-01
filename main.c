@@ -1,5 +1,6 @@
 #include <getopt.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include "src/config.h"
 #include "src/sniffer.h"
@@ -16,6 +17,8 @@ void print_help_message(FILE *stream) {
 
 
 int main(int argc, char **argv) {
+    signal(SIGINT, sigint_handler);
+
     // arguments
     char *config_path;
     char *interface = "any";
