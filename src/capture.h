@@ -9,4 +9,6 @@
 
 extern void sigint_handler(int sig);
 
+extern void sniff_interface(char *device, struct config *cfg, int count);
+
 #endif //PROJECT_CAPTURE_H

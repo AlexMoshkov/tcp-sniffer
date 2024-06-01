@@ -40,8 +40,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
     process_packets_by_filters(sniff, header, packet);
 }
 
-
-void sniff_interface(char *device, struct config *cfg) {
+void sniff_interface(char *device, struct config *cfg, int count) {
     char errbuf[PCAP_ERRBUF_SIZE];
 
     pcap_t *handle;
@@ -84,8 +83,7 @@ void sniff_interface(char *device, struct config *cfg) {
         fprintf(stderr, "Couldn't install full filter %s: %s", full_filter, pcap_geterr(handle));
     }
 
-
-    pcap_loop(handle, -1, got_packet, (u_char *) sniff);
+    pcap_loop(handle, count, got_packet, (u_char *) sniff);
 
     free_sniffer(sniff);
     pcap_close(handle);

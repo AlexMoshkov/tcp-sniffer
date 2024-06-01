@@ -8,13 +8,13 @@
 
 char *help_message = "tcp-sniffer --config <yaml_file>  [ --interface <device_name> ]\n\n"
                      "Flags:\n"
-                     "\t--config / -c <yaml_file>\t Path to configuration file in yaml format\n"
-                     "\t--interface / -i <device_name>\t Set device for capturing (default is any)\n";
+                     "\t--config / -C <yaml_file>\t Path to configuration file in yaml format\n"
+                     "\t--interface / -i <device_name>\t Set device for capturing (default is any)\n"
+                     "\t--count / -c <count>\t Set how many packet capture (default infinity)\n";
 
 void print_help_message(FILE *stream) {
     fprintf(stream, "%s\n", help_message);
 }
-
 
 int main(int argc, char **argv) {
     signal(SIGINT, sigint_handler);
@@ -22,18 +22,20 @@ int main(int argc, char **argv) {
     // arguments
     char *config_path;
     char *interface = "any";
+    int capture_count = -1;
 
     int c;
     while (1) {
         static struct option long_options[] = {
                 {"help",      no_argument,       0, 'h'},
-                {"config",    required_argument, 0, 'c'},
+                {"config",    required_argument, 0, 'C'},
                 {"interface", required_argument, 0, 'i'},
+                {"count",     required_argument, 0, 'c'},
                 {0, 0,                           0, 0},
         };
 
         int option_index = 0;
-        c = getopt_long(argc, argv, "hc:i:", long_options, &option_index);
+        c = getopt_long(argc, argv, "hC:i:c:", long_options, &option_index);
 
         if (c == -1) {
             break;
@@ -43,11 +45,14 @@ int main(int argc, char **argv) {
             case 'h':
                 print_help_message(stdout);
                 exit(0);
-            case 'c':
+            case 'C':
                 config_path = optarg;
                 break;
             case 'i':
                 interface = optarg;
+                break;
+            case 'c':
+                capture_count = atoi(optarg);
                 break;
             default:
                 abort();
@@ -62,7 +67,7 @@ int main(int argc, char **argv) {
     struct config *cfg;
     parse_config_from_yaml(config_path, &cfg);
 
-    sniff_interface(interface, cfg);
+    sniff_interface(interface, cfg, capture_count);
 
     free_config(cfg);
     return 0;
