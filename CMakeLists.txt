@@ -9,7 +9,9 @@ add_compile_options(-Wall)
 
 include(lib/FindPCAP.cmake)
 
-add_executable(tcp-sniffer main.c
+add_executable(tcp-sniffer
+        ${GLIB_INCLUDE_DIRS}
+        main.c
         src/sniffer.c
         src/interfaces.c
         src/sniffer.h
@@ -26,5 +28,11 @@ add_executable(tcp-sniffer main.c
         src/handlers/handlers.c
 )
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GLIB glib-2.0 REQUIRED)
+include_directories(${GLIB_INCLUDE_DIRS})
+find_path(GLIB_INCLUDE_DIR NAMES glib.h PATH_SUFFIXES glib-2.0)
+
 target_link_libraries(tcp-sniffer ${PCAP_LIBRARY})
 target_link_libraries(tcp-sniffer cyaml)
+target_link_libraries(tcp-sniffer ${GLIB_LIBRARIES})
