@@ -26,6 +26,10 @@ add_executable(tcp-sniffer
         src/handlers/save_pcap.h
         src/handlers/save_pcap.c
         src/handlers/handlers.c
+        src/handlers/template_saving/handler.h
+        src/handlers/template_saving/handler.c
+        src/handlers/template_saving/templater.h
+        src/handlers/template_saving/templater.c
 )
 
 find_package(PkgConfig REQUIRED)

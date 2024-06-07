@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "save_pcap.h"
 
-void process(struct save_pcap_handler *handler, const struct pcap_pkthdr *header, const u_char *packet) {
+void process_save_pcap(struct save_pcap_handler *handler, const struct pcap_pkthdr *header, const u_char *packet) {
     pcap_dump((u_char *) handler->pcap_dump, header, packet);
 }
 
@@ -22,7 +22,7 @@ void init_save_pcap_handler(struct save_pcap_handler **handler, pcap_t *handle, 
         exit(1);
     }
 
-    (*handler)->process = &process;
+    (*handler)->process = &process_save_pcap;
 }
 
 void free_save_pcap_handler(struct save_pcap_handler *handler) {
